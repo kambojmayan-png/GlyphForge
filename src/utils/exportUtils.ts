@@ -259,23 +259,79 @@ export async function downloadPatternAsPNG(
     const startX = margin;
     const startY = margin + topBarHeight;
 
-    for (let c = 0; c < cols; c++) {
-      for (let r = 0; r < rows; r++) {
-        const lvl = matrix.levels[r * cols + c];
-        const x = startX + c * (cell + gap);
-        const y = startY + r * (cell + gap);
+    if (plan.profile.id === "leetcode") {
+      // Group schedule entries by date
+      const scheduleByDate = new Map<string, number>();
+      for (const entry of plan.schedule) {
+        if (entry.active) {
+          scheduleByDate.set(entry.date, entry.level);
+        }
+      }
 
-        ctx.fillStyle = palette[lvl as keyof typeof palette] || palette[0];
-        // Rounded rect
-        ctx.beginPath();
-        const rad = 2.5;
-        ctx.roundRect ? ctx.roundRect(x, y, cell, cell, rad) : ctx.rect(x, y, cell, cell);
-        ctx.fill();
+      // Collect all unique months in schedule or trailing 12 months
+      const uniqueMonthKeys = Array.from(
+        new Set(plan.schedule.map((e) => e.month))
+      ).sort();
 
-        if (lvl > 0 && options.theme !== "dark") {
-          ctx.strokeStyle = "rgba(0,0,0,0.15)";
-          ctx.lineWidth = 1;
-          ctx.stroke();
+      let currentX = startX;
+      for (const mKey of uniqueMonthKeys) {
+        const [yStr, mStr] = mKey.split("-");
+        const yr = parseInt(yStr, 10);
+        const mo = parseInt(mStr, 10);
+        const firstDay = new Date(Date.UTC(yr, mo - 1, 1));
+        const startWeekday = firstDay.getUTCDay();
+        const daysInMonth = new Date(Date.UTC(yr, mo, 0)).getUTCDate();
+        const mCols = Math.ceil((startWeekday + daysInMonth) / 7);
+
+        for (let c = 0; c < mCols; c++) {
+          for (let r = 0; r < rows; r++) {
+            const slotIndex = c * 7 + r;
+            const dayNum = slotIndex - startWeekday + 1;
+            if (dayNum >= 1 && dayNum <= daysInMonth) {
+              const dateStr = `${yr}-${String(mo).padStart(2, "0")}-${String(dayNum).padStart(2, "0")}`;
+              const lvl = scheduleByDate.get(dateStr) ?? 0;
+              const x = currentX + c * (cell + gap);
+              const y = startY + r * (cell + gap);
+
+              ctx.fillStyle = palette[lvl as keyof typeof palette] || palette[0];
+              ctx.beginPath();
+              const rad = 2.5;
+              ctx.roundRect ? ctx.roundRect(x, y, cell, cell, rad) : ctx.rect(x, y, cell, cell);
+              ctx.fill();
+            }
+          }
+        }
+
+        // Draw month label underneath
+        const shortName = firstDay.toLocaleString("en-US", { month: "short", timeZone: "UTC" });
+        ctx.fillStyle = palette.muted;
+        ctx.font = '500 10px "Geist", system-ui, sans-serif';
+        const labelX = currentX + (mCols * (cell + gap) - gap) / 2;
+        ctx.textAlign = "center";
+        ctx.fillText(shortName, labelX, startY + graphHeight + 14);
+        ctx.textAlign = "left";
+
+        currentX += mCols * (cell + gap) + 12; // 12px inter-month gap
+      }
+    } else {
+      for (let c = 0; c < cols; c++) {
+        for (let r = 0; r < rows; r++) {
+          const lvl = matrix.levels[r * cols + c];
+          const x = startX + c * (cell + gap);
+          const y = startY + r * (cell + gap);
+
+          ctx.fillStyle = palette[lvl as keyof typeof palette] || palette[0];
+          // Rounded rect
+          ctx.beginPath();
+          const rad = 2.5;
+          ctx.roundRect ? ctx.roundRect(x, y, cell, cell, rad) : ctx.rect(x, y, cell, cell);
+          ctx.fill();
+
+          if (lvl > 0 && options.theme !== "dark") {
+            ctx.strokeStyle = "rgba(0,0,0,0.15)";
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
         }
       }
     }

@@ -289,15 +289,18 @@ export function trimLeadingTrailingBlankColumns(matrix: {
   return { rows: 7, cols: newCols, levels: newLevels, meta: newMeta };
 }
 
-export async function generatePatternMatrix(
+export async function extractGlyphTokens(
   norm: NormalizedInput,
   settings: PatternSettings,
   env: GeneratorEnv = {}
-): Promise<PatternMatrix> {
+): Promise<{
+  tokens: GlyphToken[];
+  warnings: PatternWarning[];
+  fidelity: { cluster: string; value: number }[];
+}> {
   const warnings: PatternWarning[] = [...norm.warnings];
   const fidelityList: { cluster: string; value: number }[] = [];
-
-  const lineMatrices: { rows: 7; cols: number; levels: Uint8Array; meta: ColumnMeta[] }[] = [];
+  const tokens: GlyphToken[] = [];
 
   for (let lineIdx = 0; lineIdx < norm.lines.length; lineIdx++) {
     if (env.signal?.aborted) throw new Error("CANCELLED");
@@ -305,10 +308,7 @@ export async function generatePatternMatrix(
     const lineText = norm.lines[lineIdx];
     const isShaped = isShapingDependentScript(lineText);
 
-    const tokens: GlyphToken[] = [];
-
     if (isShaped) {
-      // Entire shaped line as 1 canvas run
       const token = await buildTokenFromCanvas(
         lineText,
         lineIdx,
@@ -391,13 +391,28 @@ export async function generatePatternMatrix(
         }
       }
     }
-
-    const combinedLine = combineCharacterMatrices(tokens, {
-      charSpacing: settings.charSpacing,
-      wordSpacing: settings.wordSpacing,
-    });
-    lineMatrices.push(combinedLine);
   }
+
+  return { tokens, warnings, fidelity: fidelityList };
+}
+
+export async function generatePatternMatrix(
+  norm: NormalizedInput,
+  settings: PatternSettings,
+  env: GeneratorEnv = {}
+): Promise<PatternMatrix> {
+  const { tokens, warnings, fidelity } = await extractGlyphTokens(
+    norm,
+    settings,
+    env
+  );
+
+  const combinedLine = combineCharacterMatrices(tokens, {
+    charSpacing: settings.charSpacing,
+    wordSpacing: settings.wordSpacing,
+  });
+
+  const lineMatrices = [combinedLine];
 
   // Join lines with lineGap blank columns
   const allCols: { levels: number[]; meta: ColumnMeta }[] = [];
@@ -537,7 +552,7 @@ export async function generatePatternMatrix(
     levels: trimmed.levels,
     meta: trimmed.meta,
     warnings,
-    fidelity: fidelityList,
+    fidelity,
   };
 }
 

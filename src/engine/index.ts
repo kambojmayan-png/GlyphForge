@@ -6,6 +6,7 @@ import { normalizeInput } from "../utils/textUtils";
 import {
   generatePatternMatrix,
   computeFitSuggestions,
+  extractGlyphTokens,
   GeneratorEnv,
 } from "./patternGenerator";
 import {
@@ -14,6 +15,11 @@ import {
   matrixToContributionCells,
   mapCellsToDates,
 } from "./dateMapper";
+import {
+  buildLeetCodeCalendar,
+  mapTokensToLeetCode,
+  summarizeLeetCode,
+} from "./leetcodeMapper";
 import {
   generateSchedule,
   summarize,
@@ -82,6 +88,117 @@ export async function generatePlan(
     };
   }
 
+  // --------------------------------------------------------------------------
+  // DEDICATED LEETCODE PLATFORM PIPELINE
+  // Discontinuous 12-month calendar grid, month-aware glyph placement,
+  // LeetCode-specific date mapping, streak calculation, and statistics.
+  // --------------------------------------------------------------------------
+  if (profile.id === "leetcode") {
+    const { tokens, warnings: tokenWarnings } = await extractGlyphTokens(
+      norm,
+      settings,
+      env
+    );
+
+    if (env.signal?.aborted) {
+      return {
+        ok: false,
+        error: { code: "CANCELLED", message: "Generation was cancelled." },
+      };
+    }
+
+    const nonBlank = tokens.filter((t) => t.matrix.cols > 0);
+    if (nonBlank.length === 0) {
+      return {
+        ok: false,
+        error: {
+          code: "NOTHING_DRAWABLE",
+          message:
+            "Nothing in this input could be drawn. Try different characters or switch the render mode to Canvas.",
+        },
+      };
+    }
+
+    // Determine target year & yearMode
+    const startIso = dateValidation.dates.notBefore;
+    let targetYear = parseInt(startIso.slice(0, 4), 10);
+    let yearMode: "past1Year" | "calendarYear" = "past1Year";
+
+    if (settings.startMode === "preferredMonth" && settings.preferredMonth) {
+      targetYear = settings.preferredMonth.year;
+      yearMode = "calendarYear";
+    }
+
+    // Calculate ending month so trailing 12 months covers the entire pattern
+    const estMonths = Math.max(1, nonBlank.length);
+    const startD = new Date(`${startIso}T00:00:00Z`);
+    const endD = new Date(
+      Date.UTC(startD.getUTCFullYear(), startD.getUTCMonth() + estMonths - 1, 1)
+    );
+    const endingMonthIso = `${endD.getUTCFullYear()}-${String(
+      endD.getUTCMonth() + 1
+    ).padStart(2, "0")}-01`;
+
+    const calendar = buildLeetCodeCalendar(
+      targetYear,
+      yearMode,
+      startIso,
+      endingMonthIso
+    );
+    const leetCodeResult = mapTokensToLeetCode(
+      tokens,
+      calendar,
+      settings,
+      env.todayIso,
+      startIso
+    );
+
+    const doneSet = env.doneDates ?? new Set<IsoDate>();
+    const months = groupScheduleByMonth(leetCodeResult.schedule, {
+      printWeekStart: settings.printWeekStart,
+      doneDates: doneSet,
+      today: env.todayIso,
+    });
+
+    const summary = summarizeLeetCode(
+      leetCodeResult.schedule,
+      leetCodeResult.placement,
+      leetCodeResult.matrix,
+      norm.normalizedText,
+      settings,
+      leetCodeResult.columnOffset
+    );
+
+    const warnings = [...tokenWarnings, ...norm.warnings];
+    const pastActive = leetCodeResult.schedule.filter(
+      (e) => e.active && e.status === "past"
+    );
+    if (pastActive.length > 0) {
+      warnings.push({
+        code: "PAST_DATES",
+        message: `${pastActive.length} of these days are already in the past, so they can't be planned.`,
+        details: { count: pastActive.length },
+      });
+    }
+
+    return {
+      ok: true,
+      value: {
+        matrix: leetCodeResult.matrix,
+        placement: leetCodeResult.placement,
+        schedule: leetCodeResult.schedule,
+        months,
+        summary,
+        profile,
+        warnings,
+        fitSuggestions: [],
+      },
+    };
+  }
+
+  // --------------------------------------------------------------------------
+  // GITHUB & GENERIC CONTINUOUS PLATFORM PIPELINE (Preserved 100%)
+  // --------------------------------------------------------------------------
   // 3. Build Matrix
   let matrix = await generatePatternMatrix(norm, settings, env);
   if (env.signal?.aborted) {
