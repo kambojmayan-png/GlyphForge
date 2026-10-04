@@ -170,6 +170,8 @@ export function App() {
                 selectedDate={selectedDate}
                 onSelectDate={setSelectedDate}
                 staggerAnimation={timeline.phase === "pixelsToGraph" || timeline.phase === "compress"}
+                platform={plan.profile.id}
+                summary={plan.summary}
               />
 
               {/* Active Days List & Monthly Calendar Planner */}

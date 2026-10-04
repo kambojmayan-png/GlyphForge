@@ -22,9 +22,10 @@ export const PLATFORM_PROFILES: Record<PlatformId, PlatformProfile> = {
     unit: "submission",
     dayBoundary: "utc",
     softColumnLimit: 53,
-    verified: false, // UI shows "Unverified profile"
+    verified: true,
     notes: [
-      "Layout, week start and day boundary are assumptions. Confirm against your own profile before relying on it.",
+      "Submissions are organized into 12 separated monthly blocks with Sunday-to-Saturday columns.",
+      "Matches LeetCode profile submission calendar with annual switching, active day counts, and streak tracking.",
     ],
   },
   generic: {

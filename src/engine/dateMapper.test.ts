@@ -217,4 +217,31 @@ describe("Date Mapping Algorithm", () => {
       expect(cellWeekday).toBe(expectedWeekday);
     }
   });
+
+  it("Computes max streak accurately in summarize()", async () => {
+    const norm = normalizeInput("HI");
+    const matrix = await generatePatternMatrix(norm, DEFAULT_SETTINGS);
+    const profile = PLATFORM_PROFILES.leetcode;
+
+    expect(profile.verified).toBe(true);
+    expect(profile.weekStartsOn).toBe(0); // Sunday
+
+    const placement = resolveGridOrigin(matrix, "2026-10-12", null, profile);
+    const cells = matrixToContributionCells(matrix);
+    const dated = mapCellsToDates(cells, placement, "2026-10-04");
+    const schedule = generateSchedule(dated, matrix.meta);
+
+    const summary = (await import("./contributionCalculator")).summarize(
+      schedule,
+      placement,
+      matrix,
+      norm,
+      DEFAULT_SETTINGS,
+      profile,
+      0
+    );
+
+    expect(summary.maxStreak).toBeGreaterThan(0);
+    expect(summary.platformId).toBe("leetcode");
+  });
 });

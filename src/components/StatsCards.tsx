@@ -39,6 +39,7 @@ function useCountUp(endValue: number, durationMs = 600, reducedMotion = false): 
 
 export function StatsCards({ summary, reducedMotion = false }: StatsCardsProps) {
   const animatedActiveDays = useCountUp(summary.activeDays, 600, reducedMotion);
+  const animatedMaxStreak = useCountUp(summary.maxStreak, 600, reducedMotion);
   const animatedContributions = useCountUp(summary.estimatedContributions, 600, reducedMotion);
   const animatedWeeks = useCountUp(summary.weeks, 600, reducedMotion);
 
@@ -47,6 +48,11 @@ export function StatsCards({ summary, reducedMotion = false }: StatsCardsProps) 
       label: "Active Days",
       value: animatedActiveDays,
       sub: `${summary.activeDays} required days`,
+    },
+    {
+      label: "Max Streak",
+      value: animatedMaxStreak,
+      sub: `${summary.maxStreak} consecutive day${summary.maxStreak === 1 ? "" : "s"}`,
     },
     {
       label: "Total Contributions",
@@ -68,12 +74,6 @@ export function StatsCards({ summary, reducedMotion = false }: StatsCardsProps) 
       label: "End Date",
       value: formatDatePretty(summary.end),
       sub: `Last active: ${summary.lastActiveDay ? formatDatePretty(summary.lastActiveDay) : "None"}`,
-      isText: true,
-    },
-    {
-      label: "Pattern Size",
-      value: `${summary.patternWidth} × 7`,
-      sub: `${summary.patternWidth} cols × 7 rows`,
       isText: true,
     },
   ];

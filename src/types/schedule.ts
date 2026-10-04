@@ -42,6 +42,7 @@ export interface PlanSummary {
   weeks: number;
   totalDays: number;
   activeDays: number;
+  maxStreak: number;
   estimatedContributions: number;
   maxIntensity: number;
   patternWidth: number; // without alignment offset

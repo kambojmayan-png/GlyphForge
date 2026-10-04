@@ -11,6 +11,7 @@ import { DatedCell } from "./dateMapper";
 import {
   weekdayName,
   addDaysIso,
+  diffDaysIso,
   monthLabel,
   formatUtcIso,
   toUtcDate,
@@ -84,6 +85,29 @@ export function summarize(
     0
   );
 
+  let maxStreak = 0;
+  let currentStreak = 0;
+  let lastActiveDate: string | null = null;
+
+  for (const entry of schedule) {
+    if (entry.active) {
+      if (lastActiveDate) {
+        const diff = diffDaysIso(entry.date, lastActiveDate);
+        if (diff === 1) {
+          currentStreak++;
+        } else {
+          currentStreak = 1;
+        }
+      } else {
+        currentStreak = 1;
+      }
+      lastActiveDate = entry.date;
+      if (currentStreak > maxStreak) {
+        maxStreak = currentStreak;
+      }
+    }
+  }
+
   const firstActiveDay =
     activeEntries.length > 0 ? activeEntries[0].date : null;
   const lastActiveDay =
@@ -106,6 +130,7 @@ export function summarize(
     weeks: matrix.cols,
     totalDays,
     activeDays,
+    maxStreak,
     estimatedContributions,
     maxIntensity,
     patternWidth: matrix.cols - columnOffset,
