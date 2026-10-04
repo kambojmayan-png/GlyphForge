@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <rect width="32" height="32" rx="6" fill="#0a0f14"/>
+  <!-- 5x5 Grid G mark -->
+  <!-- Col 0 -->
+  <rect x="5" y="9" width="3.5" height="3.5" rx="1" fill="#3fa96b"/>
+  <rect x="5" y="14" width="3.5" height="3.5" rx="1" fill="#3fa96b"/>
+  <rect x="5" y="19" width="3.5" height="3.5" rx="1" fill="#3fa96b"/>
+  <!-- Col 1 -->
+  <rect x="9.5" y="5" width="3.5" height="3.5" rx="1" fill="#63cf8c"/>
+  <rect x="9.5" y="23.5" width="3.5" height="3.5" rx="1" fill="#63cf8c"/>
+  <!-- Col 2 -->
+  <rect x="14" y="5" width="3.5" height="3.5" rx="1" fill="#63cf8c"/>
+  <rect x="14" y="14" width="3.5" height="3.5" rx="1" fill="#a3f0bd"/>
+  <rect x="14" y="23.5" width="3.5" height="3.5" rx="1" fill="#63cf8c"/>
+  <!-- Col 3 -->
+  <rect x="18.5" y="5" width="3.5" height="3.5" rx="1" fill="#63cf8c"/>
+  <rect x="18.5" y="14" width="3.5" height="3.5" rx="1" fill="#a3f0bd"/>
+  <rect x="18.5" y="19" width="3.5" height="3.5" rx="1" fill="#3fa96b"/>
+  <rect x="18.5" y="23.5" width="3.5" height="3.5" rx="1" fill="#63cf8c"/>
+  <!-- Col 4 -->
+  <rect x="23" y="9" width="3.5" height="3.5" rx="1" fill="#3fa96b"/>
+  <rect x="23" y="14" width="3.5" height="3.5" rx="1" fill="#a3f0bd"/>
+  <rect x="23" y="19" width="3.5" height="3.5" rx="1" fill="#3fa96b"/>
+</svg>

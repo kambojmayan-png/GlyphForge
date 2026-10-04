@@ -1,0 +1,40 @@
+{
+  "name": "glyphforge",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Turn anything into contribution art.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:tz": "cross-env TZ=UTC vitest run && cross-env TZ=America/New_York vitest run && cross-env TZ=America/Sao_Paulo vitest run && cross-env TZ=Europe/London vitest run && cross-env TZ=Asia/Kolkata vitest run && cross-env TZ=Pacific/Auckland vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@date-fns/utc": "^2.1.0",
+    "date-fns": "^4.1.0",
+    "lucide-react": "^0.475.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^22.13.4",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "cross-env": "^7.0.3",
+    "jsdom": "^26.0.0",
+    "postcss": "^8.5.2",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.3",
+    "vite": "^6.1.0",
+    "vitest": "^3.0.5"
+  }
+}

@@ -1,0 +1,93 @@
+@import "./tokens.css";
+@import "./print.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: var(--gf-bg);
+    color: var(--gf-text);
+    font-family: "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Accessible focus ring */
+  *:focus-visible {
+    outline: 2px solid var(--gf-focus);
+    outline-offset: 2px;
+  }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Cell styles */
+.gf-cell {
+  transition: transform var(--dur-fast) var(--ease-out), fill var(--dur-base) var(--ease-out);
+  transform-origin: center;
+}
+
+.gf-cell:hover {
+  transform: scale(1.15);
+}
+
+.gf-cell--active {
+  stroke: var(--gf-text);
+  stroke-opacity: 0.35;
+  stroke-width: 1px;
+}
+
+.gf-cell--pinned {
+  stroke: var(--gf-focus) !important;
+  stroke-width: 2px !important;
+  stroke-opacity: 1 !important;
+  filter: drop-shadow(0 0 4px var(--gf-focus));
+}
+
+/* Stagger animation sweep */
+@keyframes gf-cell-appear {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-cell-sweep {
+  animation: gf-cell-appear 350ms var(--ease-out) forwards;
+  animation-delay: calc(var(--i, 0) * var(--stagger, 20ms));
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Custom subtle scrollbars for graph view */
+.custom-scrollbar::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: var(--gf-surface);
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--gf-border);
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--gf-text-muted);
+}

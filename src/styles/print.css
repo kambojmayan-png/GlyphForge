@@ -1,0 +1,55 @@
+/* Print Stylesheet for GlyphForge */
+
+#print-root {
+  display: none;
+}
+
+@media print {
+  html, body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-family: system-ui, -apple-system, sans-serif !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body > #app-shell {
+    display: none !important;
+  }
+
+  #print-root {
+    display: block !important;
+  }
+
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .print-sheet {
+    break-after: page;
+    page-break-after: always;
+    box-sizing: border-box;
+    padding: 12mm;
+    background: #fff !important;
+    color: #000 !important;
+    min-height: 100vh;
+  }
+
+  .print-sheet:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+
+  .print-month {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .print-day--active {
+    font-weight: 700 !important;
+    border: 1.5pt solid #000000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
