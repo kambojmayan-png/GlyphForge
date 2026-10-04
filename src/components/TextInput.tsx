@@ -11,14 +11,14 @@ export interface TextInputProps {
 }
 
 const EXAMPLE_CHIPS = [
-  "MAYAN",
-  "MAYAN 19",
+  "FORGE",
+  "COMMIT",
   "HELLO WORLD",
   "2026",
   "#",
   "❤️",
   "🚀",
-  "मायन",
+  "नमस्ते",
   "こんにちは",
   "你好",
 ];
@@ -57,7 +57,7 @@ export function TextInput({ value, onChange, miniPreview, error }: TextInputProp
           value={value}
           onChange={handleChange}
           rows={3}
-          placeholder="Enter text, numbers, symbols, emoji, or Unicode (e.g. MAYAN)..."
+          placeholder="Enter text, numbers, symbols, emoji, or Unicode (e.g. FORGE, COMMIT, 2026)..."
           aria-invalid={!!error}
           aria-describedby={error ? `${inputId}-error` : undefined}
           className={`w-full rounded-xl bg-gf-surface border ${

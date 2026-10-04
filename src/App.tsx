@@ -56,11 +56,11 @@ export function App() {
     }, 3000);
   };
 
-  // Generate initial pattern on load with sample "MAYAN" if no text entered
+  // Generate initial pattern on load with generic sample "FORGE" if no text entered
   useEffect(() => {
     if (!plan && !settings.text) {
-      updateSettings({ text: "MAYAN" });
-      generate({ ...settings, text: "MAYAN" });
+      updateSettings({ text: "FORGE" });
+      generate({ ...settings, text: "FORGE" });
     }
   }, []);
 

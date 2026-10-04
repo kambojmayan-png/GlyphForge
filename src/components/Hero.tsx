@@ -6,7 +6,7 @@ import { normalizeInput } from "../utils/textUtils";
 import { DEFAULT_SETTINGS } from "../engine/defaults";
 import { PatternMatrix } from "../types/pattern";
 
-const HERO_SAMPLES = ["MAYAN", "2026", "❤", "你好"];
+const HERO_SAMPLES = ["FORGE", "2026", "❤", "CODE", "你好"];
 
 export function Hero() {
   const [sampleIndex, setSampleIndex] = useState(0);

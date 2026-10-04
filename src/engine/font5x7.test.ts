@@ -15,7 +15,7 @@ describe("5x7 Pixel Font & Overrides", () => {
   });
 
   it("has exactly 7 rows for every glyph in the table", () => {
-    for (const [char, glyph] of FONT_5X7.entries()) {
+    for (const [, glyph] of FONT_5X7.entries()) {
       expect(glyph.rows).toHaveLength(7);
       expect(glyph.width).toBeGreaterThanOrEqual(1);
       expect(glyph.width).toBeLessThanOrEqual(7);
