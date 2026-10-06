@@ -6,7 +6,12 @@
 
 *Forge your contribution history into a visual signature.*
 
-<!-- Badges (build status, license, live demo) go here once the repository exists. Do not add placeholder badges that point nowhere. -->
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-glyph--forge--beryl.vercel.app-00df8f?style=for-the-badge&logo=vercel&logoColor=black)](https://glyph-forge-beryl.vercel.app/)
+[![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/kambojmayan-png/GlyphForge)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+
+**🌐 Live Application:** [https://glyph-forge-beryl.vercel.app/](https://glyph-forge-beryl.vercel.app/)  
+**📦 GitHub Repository:** [https://github.com/kambojmayan-png/GlyphForge](https://github.com/kambojmayan-png/GlyphForge)
 
 </div>
 
@@ -38,7 +43,7 @@
 22. [File structure](#22-file-structure)
 23. [Algorithm pseudocode](#23-algorithm-pseudocode)
 24. [Testing strategy](#24-testing-strategy)
-25. [Deployment to GitHub Pages](#25-deployment-to-github-pages)
+25. [Deployment & Live Demo](#25-deployment--live-demo)
 26. [Local development](#26-local-development)
 27. [Example usage](#27-example-usage)
 28. [Example input and output](#28-example-input-and-output)
@@ -2121,4 +2126,134 @@ Canvas-pipeline tests are **property tests** (shape, bounds, non-empty, no excep
 - Engine and utils: at least 90% line coverage and 100% of the date and CSV branches.
 - CI gates a deploy on `typecheck`, `lint`, `test` (including the time-zone matrix) and a successful `build`. Playwright runs on pull requests and on `main`.
 - Performance guard: generating a 120-grapheme pixel-font input must finish within 250 ms in the test environment (a regression alarm, not a benchmark).
+
+---
+
+## 25. Deployment & Live Demo
+
+The production application is deployed and publicly accessible at:
+
+**🌐 Production URL:** [https://glyph-forge-beryl.vercel.app/](https://glyph-forge-beryl.vercel.app/)
+
+### 25.1 Architecture & Hosting
+- **Hosting Provider:** [Vercel](https://vercel.com/) Edge Network with global CDN caching.
+- **Client-Side SPA:** Built using React 18, TypeScript, and Vite. The entire pattern engine, Unicode rasterizer, font rendering, LeetCode/GitHub calendar mappings, and PDF export logic run strictly inside the user's web browser.
+- **Privacy & Security:** Zero backend database, zero telemetry, zero OAuth requirements. No code or planned dates leave the client browser.
+- **Asset Caching:** Configured via `vercel.json` with immutable 1-year cache headers for static chunks and root rewrite rules for single-page routing.
+
+### 25.2 Continuous Integration & Deployment
+- **Vercel Integration:** Automatic edge deployments triggered on commits to `main`.
+- **GitHub Actions Workflow:** `.github/workflows/deploy.yml` runs full validation (`vitest run`, `tsc -b`, and `vite build`) on push events to guarantee zero regressions.
+
+---
+
+## 26. Local development
+
+To run and build GlyphForge locally:
+
+### 26.1 Prerequisites
+- Node.js (v18.0.0 or higher)
+- npm (v9.0.0 or higher)
+
+### 26.2 Installation & Dev Server
+```bash
+# Clone the repository
+git clone https://github.com/kambojmayan-png/GlyphForge.git
+cd GlyphForge
+
+# Install dependencies
+npm install
+
+# Start the Vite local development server
+npm run dev
+```
+Visit `http://localhost:5173/` in your browser.
+
+### 26.3 Running Tests & Quality Checks
+```bash
+# Run Vitest unit & integration test suite (55 tests)
+npm run test:run
+
+# Run full time-zone matrix tests
+npm run test:tz
+
+# Type-check TypeScript without emitting JS
+npm run typecheck
+
+# Production build validation
+npm run build
+```
+
+---
+
+## 27. Example usage
+
+1. **Enter Your Target Text or Symbols:**
+   Type any word, date, emoji, or non-Latin script (e.g. `FORGE`, `LEET`, `2026`, or `MAYAN`) into the input box.
+2. **Choose Platform Profile:**
+   - **GitHub Profile:** Generates a continuous 53-week linear contribution grid (Sunday to Saturday rows).
+   - **LeetCode Profile:** Generates a 12-month discontinuous matrix with visual month separation, Sunday-to-Saturday columns, and month-aware character placement that prevents letters from splitting across month gaps.
+3. **Configure Date & Alignment:**
+   - Select start date mode: Next full week, next Monday, specific date, or preferred month.
+   - Choose pattern alignment: Left, Centre, or Right.
+4. **Interact & Plan:**
+   - Hover or focus cells to view exact calendar dates, day names, contribution intensity levels, and completion status.
+   - Click cells to mark days as completed ("Done"), automatically tracking your remaining commitments.
+5. **Export Your Schedule:**
+   - **Copy Dates:** Quick newline-separated ISO date list.
+   - **Copy Schedule:** Human-readable text breakdown grouped by month.
+   - **Download CSV:** Full RFC 4180 compliant CSV table.
+   - **Download PNG:** High-resolution contribution graph image (formatted according to the active platform).
+   - **Print / PDF:** Multi-page printable calendar view formatted cleanly for A4/Letter paper.
+
+---
+
+## 28. Example input and output
+
+### 28.1 Word: `FORGE`
+- **GitHub (53 Weeks Continuous):**
+  - Columns occupied: 29 columns (5 glyphs + inter-char spacing).
+  - Total active days: 66 days across 8 calendar months.
+- **LeetCode (12 Discontinuous Months):**
+  - Distributed into consecutive month blocks (`2026-10`, `2026-11`, `2026-12`, `2027-01`, `2027-02`).
+  - Active submission slots: 66 slots placed on valid calendar days; zero active placements on off-calendar void slots.
+
+### 28.2 Word: `MAYAN`
+- Total active cells: 81 cells across 29 columns.
+- Month distribution (GitHub): `2026-10` to `2027-05` (8, 11, 15, 9, 10, 11, 10, 7).
+
+---
+
+## 29. Limitations
+
+- **Planner, Not an Auto-Committer:** GlyphForge is purely a scheduling and planning tool. It does not automatically push commits to GitHub or submit solutions to LeetCode. The developer retains complete ownership of their genuine coding activity.
+- **Grid Resolution:** GitHub and LeetCode contribution grids are fixed at 7 vertical cells (representing the 7 days of the week). Intricate multi-line scripts or overly tall logos are quantized to 7 rows using an area-weighted box filter.
+
+---
+
+## 30. Future improvements
+
+- Custom interactive pixel-art editor allowing manual drawing directly onto the grid.
+- Multi-year pattern spanning for multi-word phrases and extended milestone campaigns.
+- Direct iCalendar (`.ics`) subscription feed for Google Calendar, Apple Calendar, and Outlook.
+- Custom color theme generator supporting custom hex gradients.
+
+---
+
+## 31. Screenshots
+
+The application provides:
+- **Hero & Interactive Teaser:** Dynamic live typing demonstration converting keystrokes to glowing contribution pixels.
+- **Generator Controls:** Real-time character counter, pixel width estimator, start date controls, and platform toggles.
+- **Dual Platform Matrices:** Continuous GitHub 53-week graph and LeetCode 12-month discontinuous calendar view.
+- **Monthly Planner & Schedule:** Checkable day checkboxes, streak counter, and remaining-days countdown.
+- **Printable Modal:** Multi-page print preview with custom month grid layout.
+
+---
+
+## 32. License
+
+This project is licensed under the **MIT License**.
+
+Copyright (c) 2026 Mayan Kamboj. See the [LICENSE](LICENSE) file for details.
 

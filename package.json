@@ -4,6 +4,11 @@
   "version": "1.0.0",
   "type": "module",
   "description": "Turn anything into contribution art.",
+  "homepage": "https://glyph-forge-beryl.vercel.app/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kambojmayan-png/GlyphForge.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

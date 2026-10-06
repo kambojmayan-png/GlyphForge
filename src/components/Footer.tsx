@@ -1,6 +1,7 @@
-import { Github, ShieldCheck } from "lucide-react";
+import { Github, ShieldCheck, Globe } from "lucide-react";
 
 export function Footer() {
+  const liveUrl = "https://glyph-forge-beryl.vercel.app/";
   const repoUrl =
     import.meta.env.VITE_REPO_URL || "https://github.com/kambojmayan-png/GlyphForge";
 
@@ -48,6 +49,16 @@ export function Footer() {
           </div>
 
           <div className="flex items-center gap-6">
+            <a
+              href={liveUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 hover:text-gf-text transition-colors"
+            >
+              <Globe className="w-4 h-4 text-gf-level-3" />
+              <span>Live Web App</span>
+            </a>
+
             <a
               href="https://opensource.org/licenses/MIT"
               target="_blank"
